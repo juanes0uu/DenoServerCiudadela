@@ -42,7 +42,7 @@ POST http://localhost:8080/lugares
 Content-Type: application/json
 
 {
-  "IdUsuario": 3,
+  "IdUsuario": 1,
   "Nombre": "Empresa Textil Duitama",
   "Descripcion": "Fábrica de textiles en la ciudadela industrial",
   "Latitud": 5.826200,
@@ -54,7 +54,7 @@ POST http://localhost:8080/lugares
 Content-Type: application/json
 
 {
-  "IdUsuario": 3,
+  "IdUsuario": 1,
   "Nombre": "Centro de Convenciones",
   "Descripcion": "Lugar para eventos y ferias empresariales",
   "Latitud": 5.827500,
@@ -77,7 +77,7 @@ POST http://localhost:8080/ubicaciones
 Content-Type: application/json
 
 {
-  "IdUsuario": 2,
+  "IdUsuario": 1,
   "Latitud": 5.827600,
   "Longitud": -73.022100
 }
@@ -111,7 +111,7 @@ POST http://localhost:8080/rutas
 Content-Type: application/json
 
 {
-  "IdUsuario": 2,
+  "IdUsuario": 1,
   "Nombre": "Ruta de prueba"
 }
 

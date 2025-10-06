@@ -57,4 +57,5 @@ export class Lugar {
       return { success: false, message: "Error interno en el servidor: " + String(error) };
     }
   }
+  
 }

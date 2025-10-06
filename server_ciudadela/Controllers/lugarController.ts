@@ -42,34 +42,37 @@ export const postLugar = async (ctx: Context) => {
   const { request, response } = ctx;
 
   try {
-    const contentLength = request.headers.get("Content-Length");
-    if (contentLength === "0") {
+    // Verificar si el request tiene cuerpo
+    if (!request.hasBody) {
       response.status = 400;
-      response.body = { success: false, message: "Cuerpo de la solicitud está vacío" };
+      response.body = { success: false, message: "Cuerpo de la solicitud vacío" };
       return;
     }
 
-    const body = await request.body.json();
+    // ✅ Leer el cuerpo como JSON (forma moderna en Oak 17)
+    const body = await request.body?.json();
 
     const lugarData = {
       IdLugar: null,
       IdUsuario: body.IdUsuario,
       Nombre: body.Nombre,
       Descripcion: body.Descripcion,
-      Latitud: body.Latitud,
-      Longitud: body.Longitud,
+      Latitud: parseFloat(body.Latitud),
+      Longitud: parseFloat(body.Longitud),
     };
 
     const objLugar = new Lugar(lugarData);
     const resultado = await objLugar.insertarLugar();
 
-    response.status = 200;
+    response.status = resultado.success ? 200 : 400;
     response.body = resultado;
   } catch (error) {
-    response.status = 400;
+    console.error("❌ Error en postLugar:", error);
+    response.status = 500;
     response.body = {
       success: false,
-      message: "Error al procesar la solicitud: " + error,
+      message: "Error interno al registrar el lugar",
+      error: String(error),
     };
   }
 };
