@@ -1,0 +1,169 @@
+### Obtener todos los usuarios
+GET http://localhost:8080/usuarios
+
+### Crear un nuevo usuario
+POST http://localhost:8080/usuarios
+Content-Type: application/json
+
+{
+  "Nombre": "Juan Perez",
+  "Email": "juan@test.com",
+  "Documento": "123456"
+}
+
+### Obtener usuario por ID
+GET http://localhost:8080/usuarios/1
+
+### Actualizar usuario
+PUT http://localhost:8080/usuarios/1
+Content-Type: application/json
+
+{
+  "Nombre": "Juan Carlos Perez",
+  "Email": "juancarlos@test.com",
+  "Documento": "123456"
+}
+
+### Eliminar usuario
+DELETE http://localhost:8080/usuarios/1
+
+
+
+
+### ========== LUGARES ==========
+
+### Obtener todos los lugares
+GET http://localhost:8080/lugares
+
+
+### Crear un nuevo lugar (empresa/punto de interés)
+
+POST http://localhost:8080/lugares
+Content-Type: application/json
+
+{
+  "IdUsuario": 3,
+  "Nombre": "Empresa Textil Duitama",
+  "Descripcion": "Fábrica de textiles en la ciudadela industrial",
+  "Latitud": 5.826200,
+  "Longitud": -73.020000
+}
+
+### Crear otro lugar
+POST http://localhost:8080/lugares
+Content-Type: application/json
+
+{
+  "IdUsuario": 3,
+  "Nombre": "Centro de Convenciones",
+  "Descripcion": "Lugar para eventos y ferias empresariales",
+  "Latitud": 5.827500,
+  "Longitud": -73.021500
+}
+
+### Obtener lugar por ID
+GET http://localhost:8080/lugares/1
+
+
+
+
+### ========== UBICACIONES ==========
+
+### Obtener todas las ubicaciones
+GET http://localhost:8080/ubicaciones
+
+### Crear una nueva ubicación
+POST http://localhost:8080/ubicaciones
+Content-Type: application/json
+
+{
+  "IdUsuario": 2,
+  "Latitud": 5.827600,
+  "Longitud": -73.022100
+}
+
+### Obtener ubicación por ID
+GET http://localhost:8080/ubicaciones/2
+
+### Actualizar ubicación
+PUT http://localhost:8080/ubicaciones/2
+Content-Type: application/json
+
+{
+  "IdUsuario": 2,
+  "Latitud": 5.828000,
+  "Longitud": -73.022500
+}
+
+### Eliminar ubicación
+DELETE http://localhost:8080/ubicaciones/2
+
+
+
+
+### ========== RUTAS ==========
+
+### Obtener todas las rutas
+GET http://localhost:8080/rutas
+
+### Crear una nueva ruta
+POST http://localhost:8080/rutas
+Content-Type: application/json
+
+{
+  "IdUsuario": 2,
+  "Nombre": "Ruta de prueba"
+}
+
+### Obtener ruta por ID
+GET http://localhost:8080/rutas/2
+
+### Actualizar ruta
+PUT http://localhost:8080/rutas/2
+Content-Type: application/json
+
+{
+  "IdUsuario": 2,
+  "Nombre": "Ruta actualizada"
+}
+
+### Eliminar ruta
+DELETE http://localhost:8080/rutas/1
+
+
+
+
+### ========== RUTA DETALLE ==========
+
+### Obtener todos los puntos de ruta
+GET http://localhost:8080/ruta-detalle
+
+### Crear nuevo punto de ruta
+POST http://localhost:8080/ruta-detalle
+Content-Type: application/json
+
+{
+  "IdRuta": 2,
+  "Latitud": 5.826100,
+  "Longitud": -73.020500,
+  "Orden": 1
+}
+
+### Obtener punto de ruta por ID
+GET http://localhost:8080/ruta-detalle/2
+
+### Actualizar punto de ruta
+PUT http://localhost:8080/ruta-detalle/2
+Content-Type: application/json
+
+{
+  "IdRuta": 2,
+  "Latitud": 5.826200,
+  "Longitud": -73.020600,
+  "Orden": 2
+}
+
+### Eliminar punto de ruta
+DELETE http://localhost:8080/ruta-detalle/1
+
+
