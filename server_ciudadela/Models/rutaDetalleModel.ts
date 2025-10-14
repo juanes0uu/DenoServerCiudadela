@@ -54,6 +54,16 @@ export class RutaDetalle {
         }
     }
 
+    // 🔹 Obtener todos los puntos de una ruta (por IdRuta)
+    public async seleccionarRutaDetallePorRuta(idRuta: number): Promise<RutaDetalleData[]> {
+        const { rows } = await conexion.execute(
+            `SELECT * FROM RutaDetalle WHERE IdRuta = ? ORDER BY Orden ASC`,
+            [idRuta]
+        );
+        return rows as RutaDetalleData[];
+    }
+
+
     public async actualizarRutaDetalle(): Promise<{ success: boolean; message: string }> {
         try {
         if (!this._objRutaDetalle || this._idRutaDetalle === null)

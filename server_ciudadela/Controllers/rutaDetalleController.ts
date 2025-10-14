@@ -15,24 +15,21 @@ export const getRutaDetalles = async (ctx: Context) => {
     }
 };
 
+// ✅ Nueva versión: obtiene todos los puntos de una ruta específica
 export const getRutaDetalleById = async (ctx: RouterContext<"/ruta-detalle/:id">) => {
-    const { params, response } = ctx;
-    try {
-        const id = parseInt(params.id);
-        const obj = new RutaDetalle();
-        const data = await obj.seleccionarRutaDetallePorId(id);
-        if (data.length > 0) {
-        response.status = 200;
-        response.body = { success: true, data: data[0] };
-        } else {
-        response.status = 404;
-        response.body = { success: false, message: "RutaDetalle no encontrado" };
-        }
-    } catch (error) {
-        response.status = 400;
-        response.body = { success: false, message: "Error al obtener el registro", error };
-    }
+  const { params, response } = ctx;
+  try {
+    const idRuta = parseInt(params.id);
+    const obj = new RutaDetalle();
+    const data = await obj.seleccionarRutaDetallePorRuta(idRuta); // <-- nueva función
+    response.status = 200;
+    response.body = { success: true, data };
+  } catch (error) {
+    response.status = 400;
+    response.body = { success: false, message: "Error al obtener detalles de la ruta", error };
+  }
 };
+
 
 export const postRutaDetalle = async (ctx: Context) => {
     const { request, response } = ctx;
