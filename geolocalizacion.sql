@@ -1,6 +1,6 @@
 CREATE DATABASE geolocalizacion;
 USE geolocalizacion;
-
+drop database geolocalizacion;
 CREATE TABLE Usuario (
     IdUsuario INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
