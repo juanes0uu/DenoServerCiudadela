@@ -3,9 +3,11 @@ import { z } from "../Dependencies/deps.ts";
 
 interface UsuarioData {
   IdUsuario: number | null;
+  IdRol?: number;
   Nombre: string;
   Email: string;
   Documento: string;
+  Password: string;
   FechaRegistro?: string;
 }
 
@@ -34,17 +36,17 @@ export class Usuario {
         throw new Error("No se ha proporcionado un objeto de usuario válido.");
       }
 
-      const { Nombre, Email, Documento } = this._objUsuario;
+      const { IdRol, Nombre, Email, Documento, Password } = this._objUsuario;
 
-      if (!Nombre || !Email || !Documento) {
+      if (!IdRol || !Nombre || !Email || !Documento || !Password) {
         throw new Error("Faltan campos requeridos para insertar el usuario.");
       }
 
       await conexion.execute("START TRANSACTION");
 
       const result = await conexion.execute(
-        `INSERT INTO Usuario (Nombre, Email, Documento) VALUES (?, ?, ?)`,
-        [Nombre, Email, Documento]
+        `INSERT INTO Usuario (IdRol, Nombre, Email, Documento, Password) VALUES (?, ?, ?, ?, ?)`,
+        [IdRol, Nombre, Email, Documento, Password]
       );
 
       if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
@@ -77,7 +79,7 @@ export class Usuario {
       await conexion.execute("START TRANSACTION");
 
       const result = await conexion.execute(
-        `UPDATE Usuario SET Nombre = ?, Email = ?, Documento = ? WHERE IdUsuario = ?`,
+        `UPDATE Usuario SET Nombre = ?, Email = ?, Documento = ?, Password = ? WHERE IdUsuario = ?`,
         [Nombre, Email, Documento, this._idUsuario]
       );
 
