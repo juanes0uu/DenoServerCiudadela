@@ -6,9 +6,9 @@ POST http://localhost:8080/usuarios
 Content-Type: application/json
 
 {
-  "Nombre": "Juan Perez",
-  "Email": "juan@test.com",
-  "Documento": "123456"
+  "Nombre": "Eduard",
+  "Email": "eduard@test.com",
+  "Documento": "126756"
 }
 
 ### Obtener usuario por ID
