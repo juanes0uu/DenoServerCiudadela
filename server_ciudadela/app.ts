@@ -59,4 +59,4 @@ app.use(wsRouter.allowedMethods());
 
 console.log("🚀 Servidor de Geolocalización corriendo en http://localhost:8080");
 console.log("Aplicación de Geolocalización - Ciudadela Industrial de Duitama");
-await app.listen({ port: 8080 });
+await app.listen({ port: 8080, hostname: "0.0.0.0" });
