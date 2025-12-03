@@ -1,7 +1,13 @@
+// models/usuarioModel.ts
 import { conexion } from "./conexion.ts";
-import { z } from "../Dependencies/deps.ts";
+import { compare } from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 
-interface UsuarioData {
+type ExecuteResult = {
+  affectedRows?: number;
+  insertId?: number;
+};
+
+export interface UsuarioData {
   IdUsuario: number | null;
   IdRol?: number;
   Nombre: string;
@@ -11,6 +17,7 @@ interface UsuarioData {
   FechaRegistro?: string;
 }
 
+// ------------------ CLASE ------------------
 export class Usuario {
   public _objUsuario: UsuarioData | null;
   public _idUsuario: number | null;
@@ -20,21 +27,44 @@ export class Usuario {
     this._idUsuario = idUsuario;
   }
 
+  // 📌 Obtener todos los usuarios
   public async seleccionarUsuarios(): Promise<UsuarioData[]> {
     const { rows } = await conexion.execute(`SELECT * FROM Usuario`);
     return rows as UsuarioData[];
   }
 
-  public async seleccionarUsuarioPorId(id: number): Promise<UsuarioData[]> {
-    const { rows } = await conexion.execute(`SELECT * FROM Usuario WHERE IdUsuario = ?`, [id]);
-    return rows as UsuarioData[];
+  // 📌 Obtener por ID
+  public async seleccionarUsuarioPorId(id: number): Promise<UsuarioData | null> {
+    const { rows } = await conexion.execute(
+      `SELECT * FROM Usuario WHERE IdUsuario = ?`,
+      [id]
+    );
+    return rows?.length ? (rows[0] as UsuarioData) : null;
   }
 
-  public async insertarUsuario(): Promise<{ success: boolean; message: string; usuario?: Record<string, unknown> }> {
+  // 📌 Buscar por email (IMPORTANTE PARA LOGIN)
+  public async findUserByEmail(email: string): Promise<UsuarioData | null> {
+    const { rows } = await conexion.execute(
+      `SELECT * FROM Usuario WHERE Email = ?`,
+      [email]
+    );
+
+    return rows?.length ? (rows[0] as UsuarioData) : null;
+  }
+
+  // 📌 Validar login
+  public async validateLogin(email: string, password: string): Promise<UsuarioData | null> {
+    const user = await this.findUserByEmail(email);
+    if (!user) return null;
+
+    const valid = await compare(password, user.Password);
+    return valid ? user : null;
+  }
+
+  // 📌 Insertar usuario
+  public async insertarUsuario(): Promise<{ success: boolean; message: string; usuario?: unknown }> {
     try {
-      if (!this._objUsuario) {
-        throw new Error("No se ha proporcionado un objeto de usuario válido.");
-      }
+      if (!this._objUsuario) throw new Error("No se ha proporcionado un objeto de usuario válido.");
 
       const { IdRol, Nombre, Email, Documento, Password } = this._objUsuario;
 
@@ -49,25 +79,22 @@ export class Usuario {
         [IdRol, Nombre, Email, Documento, Password]
       );
 
-      if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
+      if (result && result.affectedRows !== undefined && result.affectedRows > 0) {
         const [usuario] = await conexion.query(`SELECT * FROM Usuario WHERE IdUsuario = LAST_INSERT_ID()`);
         await conexion.execute("COMMIT");
-        return { success: true, message: "Usuario registrado correctamente", usuario: usuario };
+
+        return { success: true, message: "Usuario registrado correctamente", usuario };
       } else {
         throw new Error("No fue posible registrar el usuario.");
       }
 
     } catch (error) {
       await conexion.execute("ROLLBACK");
-      // Corrección del error TypeScript:
-      if (error instanceof Error) {
-        return { success: false, message: error.message };
-      } else {
-        return { success: false, message: "Error interno en el servidor" };
-      }
+      return { success: false, message: error instanceof Error ? error.message : "Error interno en el servidor" };
     }
   }
 
+  // 📌 Actualizar usuario
   public async actualizarUsuario(): Promise<{ success: boolean; message: string }> {
     try {
       if (!this._objUsuario || this._idUsuario === null) {
@@ -79,27 +106,27 @@ export class Usuario {
       await conexion.execute("START TRANSACTION");
 
       const result = await conexion.execute(
-        `UPDATE Usuario SET Nombre = ?, Email = ?, Documento = ?, Password = ? WHERE IdUsuario = ?`,
+        `UPDATE Usuario SET Nombre = ?, Email = ?, Documento = ? WHERE IdUsuario = ?`,
         [Nombre, Email, Documento, this._idUsuario]
       );
 
-      if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
+      if (result && result.affectedRows !== undefined && result.affectedRows > 0) {
         await conexion.execute("COMMIT");
         return { success: true, message: "Usuario actualizado correctamente" };
       } else {
         throw new Error("No se encontró el usuario o no se realizaron cambios.");
       }
+
     } catch (error) {
       await conexion.execute("ROLLBACK");
       return { success: false, message: "Error al actualizar usuario: " + String(error) };
     }
   }
 
+  // 📌 Eliminar usuario
   public async eliminarUsuario(): Promise<{ success: boolean; message: string }> {
     try {
-      if (this._idUsuario === null) {
-        throw new Error("ID de usuario no proporcionado.");
-      }
+      if (this._idUsuario === null) throw new Error("ID de usuario no proporcionado.");
 
       await conexion.execute("START TRANSACTION");
 
@@ -108,12 +135,13 @@ export class Usuario {
         [this._idUsuario]
       );
 
-      if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
+      if (result && result.affectedRows !== undefined && result.affectedRows > 0) {
         await conexion.execute("COMMIT");
         return { success: true, message: "Usuario eliminado correctamente" };
       } else {
         throw new Error("No se encontró el usuario para eliminar.");
       }
+
     } catch (error) {
       await conexion.execute("ROLLBACK");
       return { success: false, message: "Error al eliminar usuario: " + String(error) };
