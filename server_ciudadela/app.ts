@@ -10,6 +10,8 @@ import { lugarRouter } from "./Routes/lugarRouter.ts";
 import { ubicacionRouter } from "./Routes/ubicacionRouter.ts";
 import { rutaRouter } from "./Routes/rutaRouter.ts";
 import { rutaDetalleRouter } from "./Routes/rutaDetalleRouter.ts";
+import { wsRouter } from "./Routes/wsRouter.ts";
+
 
 const app = new Application();
 
@@ -51,6 +53,10 @@ app.use(rutaRouter.allowedMethods());
 app.use(rutaDetalleRouter.routes());
 app.use(rutaDetalleRouter.allowedMethods());
 
+app.use(wsRouter.routes());
+app.use(wsRouter.allowedMethods());
+
+
 console.log("🚀 Servidor de Geolocalización corriendo en http://localhost:8080");
 console.log("Aplicación de Geolocalización - Ciudadela Industrial de Duitama");
-await app.listen({ port: 8080 });
+await app.listen({ port: 8080, hostname: "0.0.0.0" });
