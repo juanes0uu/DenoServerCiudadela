@@ -25,9 +25,10 @@ export const getUsuarioById = async (ctx: RouterContext<"/usuarios/:id">) => {
     const objUsuario = new Usuario();
     const usuario = await objUsuario.seleccionarUsuarioPorId(id);
 
-    if (usuario.length > 0) {
+    // Valida que usuario no sea null
+    if (usuario) {
       response.status = 200;
-      response.body = { success: true, data: usuario[0] };
+      response.body = { success: true, data: usuario };
     } else {
       response.status = 404;
       response.body = { success: false, message: "Usuario no encontrado" };
@@ -36,7 +37,7 @@ export const getUsuarioById = async (ctx: RouterContext<"/usuarios/:id">) => {
     response.status = 400;
     response.body = { success: false, message: "Error al obtener usuario", errors: error };
   }
-};
+}
 
 export const postUsuario = async (ctx: Context) => {
   const { request, response } = ctx;
@@ -56,6 +57,9 @@ export const postUsuario = async (ctx: Context) => {
       Nombre: body.Nombre,
       Email: body.Email,
       Documento: body.Documento,
+      Password: body.Password,
+      FechaRegistro: undefined
+      
     };
 
     const objUsuario = new Usuario(usuarioData);
@@ -76,20 +80,43 @@ export const putUsuario = async (ctx: RouterContext<"/usuarios/:id">) => {
   const { params, request, response } = ctx;
   try {
     const id = parseInt(params.id);
+    
+    // Valida que el ID sea válido
+    if (isNaN(id)) {
+      response.status = 400;
+      response.body = { success: false, message: "ID inválido" };
+      return;
+    }
+
     const body = await request.body.json();
+
+    // Valida que existan los campos requeridos
+    if (!body.Nombre || !body.Email) {
+      response.status = 400;
+      response.body = { success: false, message: "Faltan campos requeridos" };
+      return;
+    }
 
     const usuarioData = {
       IdUsuario: id,
       Nombre: body.Nombre,
       Email: body.Email,
       Documento: body.Documento,
+      Password: body.Password,
+      FechaRegistro: undefined
     };
 
     const objUsuario = new Usuario(usuarioData, id);
     const resultado = await objUsuario.actualizarUsuario();
 
-    response.status = resultado.success ? 200 : 400;
-    response.body = resultado;
+    // Verifica que resultado no sea null antes de usarlo
+    if (resultado) {
+      response.status = resultado.success ? 200 : 400;
+      response.body = resultado;
+    } else {
+      response.status = 500;
+      response.body = { success: false, message: "Error inesperado al actualizar" };
+    }
   } catch (error) {
     response.status = 400;
     response.body = { success: false, message: "Error al actualizar: " + error };

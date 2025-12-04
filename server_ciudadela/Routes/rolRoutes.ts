@@ -1,3 +1,4 @@
+// routes/rolRouter.ts
 import { Router } from "../Dependencies/deps.ts";
 import {
     getRoles,
@@ -7,13 +8,13 @@ import {
     deleteRol
 } from "../Controllers/rolController.ts";
 
-const RolRouter = new Router();
+const rolRouter = new Router();
 
-RolRouter
-    .get("/ruta-detalle", getRoles)
-    .get("/ruta-detalle/:id", getRolById)
-    .post("/ruta-detalle", postRol)
-    .put("/ruta-detalle/:id", putRol)
-    .delete("/ruta-detalle/:id", deleteRol);
+rolRouter
+    .get("/rol", getRoles)
+    .get("/rol/:id", getRolById)
+    .post("/rol", postRol)
+    .put("/rol/:id", putRol)
+    .delete("/rol/:id", deleteRol);
 
-export { RolRouter };
+export { rolRouter };

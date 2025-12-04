@@ -10,6 +10,8 @@ import { lugarRouter } from "./Routes/lugarRouter.ts";
 import { ubicacionRouter } from "./Routes/ubicacionRouter.ts";
 import { rutaRouter } from "./Routes/rutaRouter.ts";
 import { rutaDetalleRouter } from "./Routes/rutaDetalleRouter.ts";
+import { loginRouter } from "./Routes/loginRoutes.ts";
+import { rolRouter } from "./Routes/rolRoutes.ts";
 import { wsRouter } from "./Routes/wsRouter.ts";
 
 
@@ -52,6 +54,12 @@ app.use(rutaRouter.allowedMethods());
 
 app.use(rutaDetalleRouter.routes());
 app.use(rutaDetalleRouter.allowedMethods());
+
+app.use(loginRouter.routes());
+app.use(loginRouter.allowedMethods());
+
+app.use(rolRouter.routes());
+app.use(rolRouter.allowedMethods());
 
 app.use(wsRouter.routes());
 app.use(wsRouter.allowedMethods());
