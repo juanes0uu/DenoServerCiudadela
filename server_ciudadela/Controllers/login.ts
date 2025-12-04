@@ -34,13 +34,14 @@ export const login = async (ctx: RouterContext<"/login">) => {
 
         if (!validPassword) {
             response.status = 401;
-            response.body = { message: "Credenciales inválidas." };
+            response.body = { message: "CONTRASEÑA DIFERENTE." };
             return;
         }
 
         const payload = {
             userId: user.IdUsuario,
             email: user.Email,
+            password: user.Password,
             rol: user.IdRol,
         };
 

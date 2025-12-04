@@ -1,3 +1,14 @@
+### ========== LOGIN ==========
+
+### Login
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "Email": "marcos@test.com", 
+  "Password": "1234"
+}
+
 ### Obtener todos los usuarios
 GET http://localhost:8080/usuarios
 
@@ -5,10 +16,12 @@ GET http://localhost:8080/usuarios
 POST http://localhost:8080/usuarios
 Content-Type: application/json
 
-{
-  "Nombre": "Eduard",
-  "Email": "eduard@test.com",
-  "Documento": "126756"
+{ 
+  "IdRol": 1,
+  "Nombre": "Marco antonio",
+  "Email": "marcos@test.com",
+  "Documento": "0000001",
+  "Password": "1234"
 }
 
 ### Obtener usuario por ID
@@ -62,7 +75,7 @@ Content-Type: application/json
 }
 
 ### Obtener lugar por ID
-GET http://localhost:8080/lugares/1
+GET http://localhost:8080/lugares
 
 
 

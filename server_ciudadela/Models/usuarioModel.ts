@@ -1,6 +1,8 @@
 // models/usuarioModel.ts
 import { conexion } from "./conexion.ts";
 import { compare } from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
+import { hash } from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
+
 
 type ExecuteResult = {
   affectedRows?: number;
@@ -36,7 +38,7 @@ export class Usuario {
   // 📌 Obtener por ID
   public async seleccionarUsuarioPorId(id: number): Promise<UsuarioData | null> {
     const { rows } = await conexion.execute(
-      `SELECT * FROM Usuario WHERE IdUsuario = ?`,
+      `SELECT * FROM usuario WHERE IdUsuario = ?`,
       [id]
     );
     return rows?.length ? (rows[0] as UsuarioData) : null;
@@ -45,7 +47,7 @@ export class Usuario {
   // 📌 Buscar por email (IMPORTANTE PARA LOGIN)
   public async findUserByEmail(email: string): Promise<UsuarioData | null> {
     const { rows } = await conexion.execute(
-      `SELECT * FROM Usuario WHERE Email = ?`,
+      `SELECT * FROM usuario WHERE Email = ?`,
       [email]
     );
 
@@ -68,19 +70,23 @@ export class Usuario {
 
       const { IdRol, Nombre, Email, Documento, Password } = this._objUsuario;
 
+      console.log(this._objUsuario);
+
       if (!IdRol || !Nombre || !Email || !Documento || !Password) {
         throw new Error("Faltan campos requeridos para insertar el usuario.");
       }
 
+      const passwordHasheado = await hash(Password);
+
       await conexion.execute("START TRANSACTION");
 
       const result = await conexion.execute(
-        `INSERT INTO Usuario (IdRol, Nombre, Email, Documento, Password) VALUES (?, ?, ?, ?, ?)`,
-        [IdRol, Nombre, Email, Documento, Password]
+        `INSERT INTO usuario (IdRol, Nombre, Email, Documento, Password) VALUES (?, ?, ?, ?, ?)`,
+        [IdRol, Nombre, Email, Documento, passwordHasheado]
       );
 
       if (result && result.affectedRows !== undefined && result.affectedRows > 0) {
-        const [usuario] = await conexion.query(`SELECT * FROM Usuario WHERE IdUsuario = LAST_INSERT_ID()`);
+        const [usuario] = await conexion.query(`SELECT * FROM usuario WHERE IdUsuario = LAST_INSERT_ID()`);
         await conexion.execute("COMMIT");
 
         return { success: true, message: "Usuario registrado correctamente", usuario };

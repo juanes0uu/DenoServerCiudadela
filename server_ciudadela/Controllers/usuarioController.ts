@@ -54,12 +54,12 @@ export const postUsuario = async (ctx: Context) => {
 
     const usuarioData = {
       IdUsuario: null,
+      IdRol: body.IdRol,
       Nombre: body.Nombre,
       Email: body.Email,
       Documento: body.Documento,
       Password: body.Password,
       FechaRegistro: undefined
-      
     };
 
     const objUsuario = new Usuario(usuarioData);
