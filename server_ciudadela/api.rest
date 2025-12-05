@@ -5,8 +5,8 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-  "Email": "marcos@test1.com", 
-  "Password": "12345"
+  "Email": "marcos@test.com", 
+  "Password": "1234"
 }
 
 ### Obtener todos los usuarios
@@ -17,11 +17,11 @@ POST http://localhost:8080/usuarios
 Content-Type: application/json
 
 { 
-  "IdRol": 2,
-  "Nombre": "Marcos antonio",
-  "Email": "marcos@test1.com",
-  "Documento": "00000011",
-  "Password": "12345"
+  "IdRol": 1,
+  "Nombre": "Marco antonio",
+  "Email": "marcos@test.com",
+  "Documento": "0000001",
+  "Password": "1234"
 }
 
 ### Obtener usuario por ID

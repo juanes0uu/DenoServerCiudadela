@@ -22,17 +22,19 @@ wsRouter.get("/ws", (ctx) => {
       const data = JSON.parse(event.data);
 
       if (data.type === "location") {
-        // reenviar al resto
+
+        // 🔥 REENVIAR A TODOS (incluyendo al emisor)
+        const msg = JSON.stringify({
+          type: "update",
+          userId: data.userId,
+          position: data.position,
+        });
+
+        // enviar solo a clientes abiertos
+        clients = clients.filter(c => c.readyState === WebSocket.OPEN);
+
         clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(
-              JSON.stringify({
-                type: "update",
-                userId: data.userId,
-                position: data.position,
-              }),
-            );
-          }
+          client.send(msg);
         });
       }
 
