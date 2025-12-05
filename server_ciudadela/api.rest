@@ -17,11 +17,11 @@ POST http://localhost:8080/usuarios
 Content-Type: application/json
 
 { 
-  "IdRol": 1,
-  "Nombre": "Marco antonio",
-  "Email": "marcos@test.com",
-  "Documento": "0000001",
-  "Password": "1234"
+  "IdRol": 2,
+  "Nombre": "Wilson Marcos",
+  "Email": "wilson@gmail.com",
+  "Documento": "1053606820",
+  "Password": "999"
 }
 
 ### Obtener usuario por ID

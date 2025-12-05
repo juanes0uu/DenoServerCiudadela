@@ -11,7 +11,8 @@ type ExecuteResult = {
 
 export interface UsuarioData {
   IdUsuario: number | null;
-  IdRol?: number;
+  // ⚠️ CORRECCIÓN 1: Cambiado de IdRol a Rol (que es el nombre de la columna en tu DB)
+  Rol?: string;
   Nombre: string;
   Email: string;
   Documento: string;
@@ -29,13 +30,13 @@ export class Usuario {
     this._idUsuario = idUsuario;
   }
 
-  // 📌 Obtener todos los usuarios
+  //  Obtener todos los usuarios
   public async seleccionarUsuarios(): Promise<UsuarioData[]> {
     const { rows } = await conexion.execute(`SELECT * FROM Usuario`);
     return rows as UsuarioData[];
   }
 
-  // 📌 Obtener por ID
+  //  Obtener por ID
   public async seleccionarUsuarioPorId(id: number): Promise<UsuarioData | null> {
     const { rows } = await conexion.execute(
       `SELECT * FROM usuario WHERE IdUsuario = ?`,
@@ -44,7 +45,7 @@ export class Usuario {
     return rows?.length ? (rows[0] as UsuarioData) : null;
   }
 
-  // 📌 Buscar por email (IMPORTANTE PARA LOGIN)
+  //  Buscar por email (IMPORTANTE PARA LOGIN)
   public async findUserByEmail(email: string): Promise<UsuarioData | null> {
     const { rows } = await conexion.execute(
       `SELECT * FROM usuario WHERE Email = ?`,
@@ -54,7 +55,7 @@ export class Usuario {
     return rows?.length ? (rows[0] as UsuarioData) : null;
   }
 
-  // 📌 Validar login
+  //  Validar login
   public async validateLogin(email: string, password: string): Promise<UsuarioData | null> {
     const user = await this.findUserByEmail(email);
     if (!user) return null;
@@ -63,16 +64,18 @@ export class Usuario {
     return valid ? user : null;
   }
 
-  // 📌 Insertar usuario
+  //  Insertar usuario
   public async insertarUsuario(): Promise<{ success: boolean; message: string; usuario?: unknown }> {
     try {
       if (!this._objUsuario) throw new Error("No se ha proporcionado un objeto de usuario válido.");
 
-      const { IdRol, Nombre, Email, Documento, Password } = this._objUsuario;
+      //  correcion 1 cambie IdRol por Rol 
+      const { Rol, Nombre, Email, Documento, Password } = this._objUsuario;
 
       console.log(this._objUsuario);
 
-      if (!IdRol || !Nombre || !Email || !Documento || !Password) {
+      // correcion 2 cambiado IdRol por Rol en la validación
+      if (!Rol || !Nombre || !Email || !Documento || !Password) {
         throw new Error("Faltan campos requeridos para insertar el usuario.");
       }
 
@@ -80,9 +83,10 @@ export class Usuario {
 
       await conexion.execute("START TRANSACTION");
 
+      // correccion 3 cambiado IdRol por Rol en la sentencia SQL
       const result = await conexion.execute(
-        `INSERT INTO usuario (IdRol, Nombre, Email, Documento, Password) VALUES (?, ?, ?, ?, ?)`,
-        [IdRol, Nombre, Email, Documento, passwordHasheado]
+        `INSERT INTO usuario (Rol, Nombre, Email, Documento, Password) VALUES (?, ?, ?, ?, ?)`,
+        [Rol, Nombre, Email, Documento, passwordHasheado]
       );
 
       if (result && result.affectedRows !== undefined && result.affectedRows > 0) {
@@ -100,7 +104,7 @@ export class Usuario {
     }
   }
 
-  // 📌 Actualizar usuario
+  //  Actualizar usuario
   public async actualizarUsuario(): Promise<{ success: boolean; message: string }> {
     try {
       if (!this._objUsuario || this._idUsuario === null) {
@@ -129,7 +133,7 @@ export class Usuario {
     }
   }
 
-  // 📌 Eliminar usuario
+  //  Eliminar usuario
   public async eliminarUsuario(): Promise<{ success: boolean; message: string }> {
     try {
       if (this._idUsuario === null) throw new Error("ID de usuario no proporcionado.");

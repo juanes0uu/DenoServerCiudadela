@@ -2,6 +2,9 @@ import { Context } from "../Dependencies/deps.ts";
 import { Usuario } from "../Models/usuarioModel.ts";
 import type { RouterContext } from "../Dependencies/deps.ts";
 
+
+// GET TODOS LOS USUARIOS
+
 export const getUsuarios = async (ctx: Context) => {
   const { response } = ctx;
 
@@ -16,6 +19,9 @@ export const getUsuarios = async (ctx: Context) => {
     response.body = { success: false, message: "Error al procesar la solicitud", errors: error };
   }
 };
+
+
+// GET USUARIO POR ID
 
 export const getUsuarioById = async (ctx: RouterContext<"/usuarios/:id">) => {
   const { params, response } = ctx;
@@ -39,6 +45,9 @@ export const getUsuarioById = async (ctx: RouterContext<"/usuarios/:id">) => {
   }
 }
 
+
+// POST CREAR USUARIO
+
 export const postUsuario = async (ctx: Context) => {
   const { request, response } = ctx;
 
@@ -52,15 +61,27 @@ export const postUsuario = async (ctx: Context) => {
 
     const body = await request.body.json();
 
+   
+    const rolId = Number(body.IdRol) || 1; // Extrae IdRol o usa 1 por defecto
+
+    let rolNombre = "Usuario";
+    if (rolId === 2) {
+      rolNombre = "Administrador";
+    }
+  
+
     const usuarioData = {
       IdUsuario: null,
-      IdRol: body.IdRol,
+      Rol: rolNombre, //  Asigna la cadena de texto adecuada (VARCHAR)
       Nombre: body.Nombre,
       Email: body.Email,
       Documento: body.Documento,
       Password: body.Password,
       FechaRegistro: undefined
     };
+
+    // Opcional: Para verificar en consola antes de insertar
+    console.log("Datos que se enviarán al modelo:", usuarioData);
 
     const objUsuario = new Usuario(usuarioData);
     const resultado = await objUsuario.insertarUsuario();
@@ -76,11 +97,14 @@ export const postUsuario = async (ctx: Context) => {
   }
 };
 
+
+// PUT ACTUALIZAR USUARIO
+
 export const putUsuario = async (ctx: RouterContext<"/usuarios/:id">) => {
   const { params, request, response } = ctx;
   try {
     const id = parseInt(params.id);
-    
+
     // Valida que el ID sea válido
     if (isNaN(id)) {
       response.status = 400;
@@ -122,6 +146,8 @@ export const putUsuario = async (ctx: RouterContext<"/usuarios/:id">) => {
     response.body = { success: false, message: "Error al actualizar: " + error };
   }
 };
+
+// DELETE ELIMINAR USUARIO
 
 export const deleteUsuario = async (ctx: RouterContext<"/usuarios/:id">) => {
   const { params, response } = ctx;

@@ -19,7 +19,10 @@ const app = new Application();
 
 // Configurar CORS
 app.use(oakCors({
-    origin: "*",
+    // Nota: Es mejor usar el host específico de ngrok aquí en lugar de "*" 
+    // si puedes, para mayor seguridad.
+    // origin: "https://parasynthetic-audry-unprovincial.ngrok-free.dev", 
+    origin: "*", 
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
@@ -27,6 +30,12 @@ app.use(oakCors({
 // Crear routers
 const usuarioRouter = new Router();
 usuarioRouter
+    // ⚠️ RUTA RAÍZ AGREGADA PARA EVITAR EL 404 DE NGROK ⚠️
+    .get("/", (ctx) => {
+        ctx.response.body = "API Deno online y funcionando correctamente.";
+        ctx.response.status = 200;
+    })
+    // --------------------------------------------------
     .get("/usuarios", getUsuarios)
     .get("/usuarios/:id", getUsuarioById)
     .post("/usuarios", postUsuario)
