@@ -1,0 +1,96 @@
+CREATE DATABASE IF NOT EXISTS geolocalizacion;
+USE geolocalizacion;
+
+CREATE TABLE lugar (
+  IdLugar INT(11) NOT NULL AUTO_INCREMENT,
+  IdUsuario INT(11) DEFAULT NULL,
+  Nombre VARCHAR(150) NOT NULL,
+  Descripcion TEXT DEFAULT NULL,
+  Latitud DECIMAL(10,8) NOT NULL,
+  Longitud DECIMAL(11,8) NOT NULL,
+  FechaCreacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (IdLugar),
+  KEY IdUsuario (IdUsuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE registroingreso (
+  IdRegistro INT(10) NOT NULL AUTO_INCREMENT,
+  IdUsuario INT(10) NOT NULL,
+  fechaIngreso DATE NOT NULL,
+  PRIMARY KEY (IdRegistro),
+  KEY IdUsuario (IdUsuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE rol (
+  IdRol INT(11) NOT NULL AUTO_INCREMENT,
+  rol VARCHAR(100) NOT NULL,
+  PRIMARY KEY (IdRol)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO rol (IdRol, rol) VALUES
+(1, 'Admin'),
+(2, 'Visitante');
+
+CREATE TABLE ruta (
+  IdRuta INT(11) NOT NULL AUTO_INCREMENT,
+  IdUsuario INT(11) NOT NULL,
+  Nombre VARCHAR(150) DEFAULT NULL,
+  FechaCreacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (IdRuta),
+  KEY IdUsuario (IdUsuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO ruta (IdRuta, IdUsuario, Nombre, FechaCreacion) VALUES
+(1, 1, 'Ruta - 21/11/2025, 7:58:05 a. m.', '2025-11-21 12:58:05'),
+(2, 1, 'Ruta - 21/11/2025, 7:58:44 a. m.', '2025-11-21 12:58:44');
+
+CREATE TABLE rutadetalle (
+  IdRutaDetalle INT(11) NOT NULL AUTO_INCREMENT,
+  IdRuta INT(11) NOT NULL,
+  Latitud DECIMAL(10,8) NOT NULL,
+  Longitud DECIMAL(11,8) NOT NULL,
+  Orden INT(11) NOT NULL,
+  PRIMARY KEY (IdRutaDetalle),
+  KEY IdRuta (IdRuta)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO rutadetalle (IdRutaDetalle, IdRuta, Latitud, Longitud, Orden) VALUES
+(1, 1, 5.79357634, -73.06471467, 1),
+(2, 1, 5.79344910, -73.06446791, 2),
+(3, 1, 5.79278753, -73.06430697, 3),
+(4, 1, 5.79241407, -73.06318045, 4),
+(5, 2, 5.79386525, -73.06375980, 1),
+(6, 2, 5.79249952, -73.06325555, 3),
+(7, 2, 5.79390803, -73.06375980, 2),
+(8, 2, 5.79271293, -73.06223631, 4),
+(9, 2, 5.79365194, -73.06238651, 5);
+
+CREATE TABLE ubicacion (
+  IdUbicacion INT(11) NOT NULL AUTO_INCREMENT,
+  IdUsuario INT(11) NOT NULL,
+  Latitud DECIMAL(10,8) NOT NULL,
+  Longitud DECIMAL(11,8) NOT NULL,
+  FechaHora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (IdUbicacion),
+  KEY IdUsuario (IdUsuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO ubicacion (IdUbicacion, IdUsuario, Latitud, Longitud, FechaHora) VALUES
+(1, 1, 5.79610970, -73.05232240, '2025-11-21 12:58:04'),
+(2, 1, 5.79610970, -73.05232240, '2025-11-21 12:58:04');
+
+CREATE TABLE usuario (
+  IdUsuario INT(11) NOT NULL AUTO_INCREMENT,
+  IdRol INT(11) DEFAULT NULL,
+  Nombre VARCHAR(100) NOT NULL,
+  Email VARCHAR(100) NOT NULL,
+  Documento VARCHAR(255) NOT NULL,
+  Password VARCHAR(255) NOT NULL,
+  FechaRegistro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (IdUsuario),
+  UNIQUE KEY Email (Email),
+  KEY IdRol (IdRol)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO usuario (IdUsuario, IdRol, Nombre, Email, Documento, Password, FechaRegistro) VALUES
+(1, 1, 'Juan Perez', 'juan@test.com', '123456', '', '2025-10-06 12:59:32');

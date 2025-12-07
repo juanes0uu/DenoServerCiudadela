@@ -17,9 +17,9 @@ POST http://localhost:8080/usuarios
 Content-Type: application/json
 
 { 
-  "IdRol": 2,
+  "Rol": "Admin",
   "Nombre": "Wilson Marcos",
-  "Email": "wilson@gmail.com",
+  "Email": "wilson1@gmail.com",
   "Documento": "1053606820",
   "Password": "999"
 }
