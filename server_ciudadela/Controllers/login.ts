@@ -42,7 +42,7 @@ export const login = async (ctx: RouterContext<"/login">) => {
             userId: user.IdUsuario,
             email: user.Email,
             password: user.Password,
-            rol: user.Rol,
+            rol: user.IdRol,
         };
 
         const secretKey = typeof JWT_SECRET === 'string' ? new TextEncoder().encode(JWT_SECRET) : JWT_SECRET;
@@ -60,7 +60,7 @@ export const login = async (ctx: RouterContext<"/login">) => {
                 id: user.IdUsuario,
                 nombre: user.Nombre,
                 email: user.Email,
-                rol: user.Rol
+                rol: user.IdRol
             }
         };
     } catch (error) {
