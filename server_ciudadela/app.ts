@@ -1,11 +1,6 @@
 import { Application, oakCors, Router } from "./Dependencies/deps.ts";
-import { 
-    getUsuarios, 
-    getUsuarioById, 
-    postUsuario, 
-    putUsuario, 
-    deleteUsuario 
-} from "./Controllers/usuarioController.ts";
+import { usuarioRouter } from "./Routes/usuarioRouter.ts";
+
 import { lugarRouter } from "./Routes/lugarRouter.ts";
 import { ubicacionRouter } from "./Routes/ubicacionRouter.ts";
 import { rutaRouter } from "./Routes/rutaRouter.ts";
@@ -28,19 +23,6 @@ app.use(oakCors({
 }));
 
 // Crear routers
-const usuarioRouter = new Router();
-usuarioRouter
-    // ⚠️ RUTA RAÍZ AGREGADA PARA EVITAR EL 404 DE NGROK ⚠️
-    .get("/", (ctx) => {
-        ctx.response.body = "API Deno online y funcionando correctamente.";
-        ctx.response.status = 200;
-    })
-    // --------------------------------------------------
-    .get("/usuarios", getUsuarios)
-    .get("/usuarios/:id", getUsuarioById)
-    .post("/usuarios", postUsuario)
-    .put("/usuarios/:id", putUsuario)
-    .delete("/usuarios/:id", deleteUsuario);
 
 // Middleware para logging
 app.use(async (ctx, next) => {
@@ -72,6 +54,9 @@ app.use(rolRouter.allowedMethods());
 
 app.use(wsRouter.routes());
 app.use(wsRouter.allowedMethods());
+
+app.use(usuarioRouter.routes());
+app.use(usuarioRouter.allowedMethods());
 
 
 console.log("🚀 Servidor de Geolocalización corriendo en http://localhost:8080");

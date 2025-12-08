@@ -41,7 +41,6 @@ export const login = async (ctx: RouterContext<"/login">) => {
         const payload = {
             userId: user.IdUsuario,
             email: user.Email,
-            password: user.Password,
             rol: user.IdRol,
         };
 

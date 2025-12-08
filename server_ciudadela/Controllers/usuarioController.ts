@@ -61,24 +61,16 @@ export const postUsuario = async (ctx: Context) => {
 
     const body = await request.body.json();
 
-   
-    const rolId = Number(body.IdRol) || 1; // Extrae IdRol o usa 1 por defecto
-
-    let rolNombre = "Usuario";
-    if (rolId === 2) {
-      rolNombre = "Administrador";
-    }
   
 
-    const usuarioData = {
-      IdUsuario: null,
-      Rol: rolNombre, //  Asigna la cadena de texto adecuada (VARCHAR)
-      Nombre: body.Nombre,
-      Email: body.Email,
-      Documento: body.Documento,
-      Password: body.Password,
-      FechaRegistro: undefined
-    };
+  const usuarioData = {
+    IdUsuario: null,
+    Nombre: body.Nombre,
+    Email: body.Email,
+    Documento: body.Documento,
+    Password: body.Password,
+  };
+
 
     // Opcional: Para verificar en consola antes de insertar
     console.log("Datos que se enviarán al modelo:", usuarioData);
@@ -96,6 +88,42 @@ export const postUsuario = async (ctx: Context) => {
     };
   }
 };
+
+
+// POST CREAR ADMIN
+export const postAdmin = async (ctx: Context) => {
+  console.log("🔥 POST ADMIN EJECUTADO 🔥");
+  const { request, response } = ctx;
+
+  try {
+    const body = await request.body.json();
+
+    const usuarioData = {
+      IdUsuario: null,
+      IdRol: 1, // ADMIN
+      Nombre: body.Nombre,
+      Email: body.Email,
+      Documento: body.Documento,
+      Password: body.Password,
+    };
+
+    console.log("👑 Creando admin:", usuarioData);
+
+    const objUsuario = new Usuario(usuarioData);
+    const resultado = await objUsuario.insertarUsuarioConRol();
+
+    response.status = 200;
+    response.body = resultado;
+
+  } catch (error) {
+    response.status = 400;
+    response.body = {
+      success: false,
+      message: "Error al crear admin",
+    };
+  }
+};
+
 
 
 // PUT ACTUALIZAR USUARIO

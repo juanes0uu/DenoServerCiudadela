@@ -92,5 +92,7 @@ CREATE TABLE usuario (
   KEY IdRol (IdRol)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO usuario (IdUsuario, IdRol, Nombre, Email, Documento, Password, FechaRegistro) VALUES
-(1, 1, 'Juan Perez', 'juan@test.com', '123456', '', '2025-10-06 12:59:32');
+
+
+
+
