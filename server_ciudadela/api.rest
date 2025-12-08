@@ -5,8 +5,13 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
+<<<<<<< HEAD
   "Email": "wilso@gmail.com", 
   "Password": "999"
+=======
+  "Email": "nicl@gmail.com", 
+  "Password": "11111"
+>>>>>>> 63e58e18ef08527d926f2e3888d76a2a9c10a552
 }
 
 ### Obtener todos los usuarios
@@ -17,10 +22,10 @@ POST http://localhost:8080/usuarios
 Content-Type: application/json
 
 { 
-  "Nombre": "Wilson Marcos",
-  "Email": "wilso@gmail.com",
+  "Nombre": "Nicol",
+  "Email": "nicol@gmail.com",
   "Documento": "1053606820",
-  "Password": "999"
+  "Password": "11111"
 }
 
 ### CREAR ADMIN
