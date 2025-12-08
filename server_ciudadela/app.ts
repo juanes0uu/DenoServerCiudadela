@@ -12,53 +12,34 @@ import { wsRouter } from "./Routes/wsRouter.ts";
 
 const app = new Application();
 
-// Configurar CORS
+// CORS
 app.use(oakCors({
-    // Nota: Es mejor usar el host específico de ngrok aquí en lugar de "*" 
-    // si puedes, para mayor seguridad.
-    // origin: "https://parasynthetic-audry-unprovincial.ngrok-free.dev", 
-    origin: "*", 
+    origin: "*",
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
+    credentials: true,
 }));
 
-// Crear routers
-
-// Middleware para logging
-app.use(async (ctx, next) => {
-    console.log(`${ctx.request.method} ${ctx.request.url}`);
-    await next();
+// Health check
+const router = new Router();
+router.get("/", (ctx) => {
+    ctx.response.body = {
+        status: "OK",
+        message: "Backend de geolocalización activo",
+    };
 });
 
-// Rutas
-app.use(usuarioRouter.routes());
-app.use(usuarioRouter.allowedMethods());
+app.use(router.routes());
+app.use(router.allowedMethods());
 
+// Routers del sistema
+app.use(usuarioRouter.routes());
 app.use(lugarRouter.routes());
-app.use(lugarRouter.allowedMethods());
-
 app.use(ubicacionRouter.routes());
-app.use(ubicacionRouter.allowedMethods());
-
 app.use(rutaRouter.routes());
-app.use(rutaRouter.allowedMethods());
-
 app.use(rutaDetalleRouter.routes());
-app.use(rutaDetalleRouter.allowedMethods());
-
 app.use(loginRouter.routes());
-app.use(loginRouter.allowedMethods());
-
 app.use(rolRouter.routes());
-app.use(rolRouter.allowedMethods());
-
 app.use(wsRouter.routes());
-app.use(wsRouter.allowedMethods());
 
-app.use(usuarioRouter.routes());
-app.use(usuarioRouter.allowedMethods());
-
-
-console.log("🚀 Servidor de Geolocalización corriendo en http://localhost:8080");
-console.log("Aplicación de Geolocalización - Ciudadela Industrial de Duitama");
-await app.listen({ port: 8080, hostname: "0.0.0.0" });
+console.log("Servidor activo en Deno Deploy");
+await app.listen({ port: 8080 });
