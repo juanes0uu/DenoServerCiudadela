@@ -1,56 +1,66 @@
 import { Router } from "../Dependencies/deps.ts";
 
-let clients: WebSocket[] = [];
+type WSClient = {
+  socket: WebSocket;
+  role?: "admin" | "visitante";
+  userId?: string;
+};
+
+let clients: WSClient[] = [];
 
 export const wsRouter = new Router();
 
 wsRouter.get("/ws", (ctx) => {
+  const socket = ctx.upgrade();
 
-  const sock = ctx.upgrade();
+  const client: WSClient = { socket };
+  clients.push(client);
 
-  // Cliente conectado
-  sock.addEventListener("open", () => {
-    console.log("Cliente conectado correctamente");
-    clients.push(sock);
-  });
+  console.log("🟢 Cliente WS conectado");
 
-  // Recepción de mensajes
-  sock.addEventListener("message", (event) => {
-    console.log("Mensaje WS recibido: ", event.data);
-
+  socket.addEventListener("message", (event) => {
     try {
       const data = JSON.parse(event.data);
 
-      if (data.type === "location") {
+      /* 🔐 REGISTRO */
+      if (data.type === "register") {
+        client.role = data.role;
+        client.userId = data.userId;
+        console.log(`✅ Registrado: ${client.role} (${client.userId})`);
+        return;
+      }
 
-        // 🔥 REENVIAR A TODOS (incluyendo al emisor)
+      /* 📍 UBICACIÓN */
+      if (data.type === "location" && client.role === "visitante") {
+        if (!client.userId || !data.position) return;
+
         const msg = JSON.stringify({
           type: "update",
-          userId: data.userId,
+          userId: client.userId,
           position: data.position,
         });
 
-        // enviar solo a clientes abiertos
-        clients = clients.filter(c => c.readyState === WebSocket.OPEN);
+        // limpiar conexiones muertas
+        clients = clients.filter((c) => c.socket.readyState === WebSocket.OPEN);
 
-        clients.forEach((client) => {
-          client.send(msg);
+        // enviar solo a ADMIN
+        clients.forEach((c) => {
+          if (c.role === "admin") {
+            c.socket.send(msg);
+          }
         });
       }
-
     } catch (error) {
-      console.log("Error procesando WS:", error);
+      console.error("❌ Error WS:", error);
     }
   });
 
-  // Cliente desconectado
-  sock.addEventListener("close", () => {
-    console.log("Cliente desconectado");
-    clients = clients.filter((c) => c !== sock);
+  socket.addEventListener("close", () => {
+    console.log("🔴 Cliente desconectado");
+    clients = clients.filter((c) => c.socket !== socket);
   });
 
-  sock.addEventListener("error", (err) => {
-    console.log("Error WS:", err);
+  socket.addEventListener("error", (err) => {
+    console.log("❌ Error WS:", err);
   });
-
 });
