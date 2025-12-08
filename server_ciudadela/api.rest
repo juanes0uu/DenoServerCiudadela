@@ -5,7 +5,7 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-  "Email": "marcos@test.com", 
+  "Email": "marco@test.com", 
   "Password": "1234"
 }
 
@@ -17,12 +17,24 @@ POST http://localhost:8080/usuarios
 Content-Type: application/json
 
 { 
-  "IdRol": 2,
   "Nombre": "Wilson Marcos",
-  "Email": "wilson@gmail.com",
+  "Email": "wilso@gmail.com",
   "Documento": "1053606820",
   "Password": "999"
 }
+
+### CREAR ADMIN
+POST http://localhost:8080/usuarios/admin
+Content-Type: application/json
+
+{
+  "Nombre": "Admin Root",
+  "Email": "admin@admin.com",
+  "Documento": "123456",
+  "Password": "admin123"
+}
+
+
 
 ### Obtener usuario por ID
 GET http://localhost:8080/usuarios/1

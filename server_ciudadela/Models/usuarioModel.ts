@@ -11,14 +11,14 @@ type ExecuteResult = {
 
 export interface UsuarioData {
   IdUsuario: number | null;
-  // ⚠️ CORRECCIÓN 1: Cambiado de IdRol a Rol (que es el nombre de la columna en tu DB)
-  Rol?: string;
+  IdRol?: number;
   Nombre: string;
   Email: string;
   Documento: string;
   Password: string;
   FechaRegistro?: string;
 }
+
 
 // ------------------ CLASE ------------------
 export class Usuario {
@@ -65,44 +65,68 @@ export class Usuario {
   }
 
   //  Insertar usuario
-  public async insertarUsuario(): Promise<{ success: boolean; message: string; usuario?: unknown }> {
+  public async insertarUsuario() {
     try {
-      if (!this._objUsuario) throw new Error("No se ha proporcionado un objeto de usuario válido.");
+      if (!this._objUsuario) throw new Error("Usuario inválido");
 
-      //  correcion 1 cambie IdRol por Rol 
-      const { Rol, Nombre, Email, Documento, Password } = this._objUsuario;
-
-      console.log(this._objUsuario);
-
-      // correcion 2 cambiado IdRol por Rol en la validación
-      if (!Rol || !Nombre || !Email || !Documento || !Password) {
-        throw new Error("Faltan campos requeridos para insertar el usuario.");
-      }
+      const { Nombre, Email, Documento, Password } = this._objUsuario;
 
       const passwordHasheado = await hash(Password);
 
       await conexion.execute("START TRANSACTION");
 
-      // correccion 3 cambiado IdRol por Rol en la sentencia SQL
       const result = await conexion.execute(
-        `INSERT INTO usuario (Rol, Nombre, Email, Documento, Password) VALUES (?, ?, ?, ?, ?)`,
-        [Rol, Nombre, Email, Documento, passwordHasheado]
+        `INSERT INTO usuario (IdRol, Nombre, Email, Documento, Password)
+          VALUES (?, ?, ?, ?, ?)`,
+        [2, Nombre, Email, Documento, passwordHasheado] // SIEMPRE VISITANTE
       );
 
-      if (result && result.affectedRows !== undefined && result.affectedRows > 0) {
-        const [usuario] = await conexion.query(`SELECT * FROM usuario WHERE IdUsuario = LAST_INSERT_ID()`);
-        await conexion.execute("COMMIT");
+      const [usuario] = await conexion.query(
+        `SELECT * FROM usuario WHERE IdUsuario = LAST_INSERT_ID()`
+      );
 
-        return { success: true, message: "Usuario registrado correctamente", usuario };
-      } else {
-        throw new Error("No fue posible registrar el usuario.");
-      }
+      await conexion.execute("COMMIT");
+
+      return { success: true, message: "Usuario registrado", usuario };
 
     } catch (error) {
       await conexion.execute("ROLLBACK");
-      return { success: false, message: error instanceof Error ? error.message : "Error interno en el servidor" };
+      return { success: false, message: "Error al registrar" };
     }
   }
+
+
+  //  Insertar usuario con rol (ADMIN)
+  public async insertarUsuarioConRol() {
+    try {
+      if (!this._objUsuario) throw new Error("Usuario inválido");
+
+      const { IdRol, Nombre, Email, Documento, Password } = this._objUsuario;
+
+      const passwordHasheado = await hash(Password);
+
+      await conexion.execute("START TRANSACTION");
+
+      await conexion.execute(
+        `INSERT INTO usuario (IdRol, Nombre, Email, Documento, Password)
+        VALUES (?, ?, ?, ?, ?)`,
+        [IdRol, Nombre, Email, Documento, passwordHasheado]
+      );
+
+      const [usuario] = await conexion.query(
+        `SELECT * FROM usuario WHERE IdUsuario = LAST_INSERT_ID()`
+      );
+
+      await conexion.execute("COMMIT");
+
+      return { success: true, message: "Admin creado correctamente", usuario };
+
+    } catch (error) {
+      await conexion.execute("ROLLBACK");
+      return { success: false, message: "Error al crear admin" };
+    }
+  }
+
 
   //  Actualizar usuario
   public async actualizarUsuario(): Promise<{ success: boolean; message: string }> {
