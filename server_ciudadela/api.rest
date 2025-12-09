@@ -5,13 +5,8 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-<<<<<<< HEAD
-  "Email": "wilso@gmail.com", 
-  "Password": "999"
-=======
-  "Email": "nicl@gmail.com", 
-  "Password": "11111"
->>>>>>> 63e58e18ef08527d926f2e3888d76a2a9c10a552
+  "Email": "admin@admin.com", 
+  "Password": "admin123"
 }
 
 ### Obtener todos los usuarios
