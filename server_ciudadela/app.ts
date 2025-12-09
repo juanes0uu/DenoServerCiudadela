@@ -40,6 +40,6 @@ app.use(rutaDetalleRouter.routes());
 app.use(loginRouter.routes());
 app.use(rolRouter.routes());
 app.use(wsRouter.routes());
-
+app.use(wsRouter.allowedMethods());
 console.log("Servidor activo en Deno Deploy");
 await app.listen({ port: 8080 });

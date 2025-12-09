@@ -34,17 +34,21 @@ wsRouter.get("/ws", (ctx) => {
       if (data.type === "location" && client.role === "visitante") {
         if (!client.userId || !data.position) return;
 
+        console.log(
+          `📍 Ubicación visitante ${client.userId}:`,
+          data.position.lat,
+          data.position.lng
+        );
+
         const msg = JSON.stringify({
           type: "update",
           userId: client.userId,
           position: data.position,
         });
 
-        // limpiar conexiones muertas
-        clients = clients.filter((c) => c.socket.readyState === WebSocket.OPEN);
+        clients = clients.filter(c => c.socket.readyState === WebSocket.OPEN);
 
-        // enviar solo a ADMIN
-        clients.forEach((c) => {
+        clients.forEach(c => {
           if (c.role === "admin") {
             c.socket.send(msg);
           }
