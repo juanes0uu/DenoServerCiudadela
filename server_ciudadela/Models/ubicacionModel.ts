@@ -18,12 +18,12 @@ export class Ubicacion {
     }
 
     public async seleccionarUbicaciones(): Promise<UbicacionData[]> {
-        const { rows } = await conexion.execute(`SELECT * FROM Ubicacion`);
+        const { rows } = await conexion.execute(`SELECT * FROM ubicacion`);
         return rows as UbicacionData[];
     }
 
     public async seleccionarUbicacionPorId(id: number): Promise<UbicacionData[]> {
-        const { rows } = await conexion.execute(`SELECT * FROM Ubicacion WHERE IdUbicacion = ?`, [id]);
+        const { rows } = await conexion.execute(`SELECT * FROM ubicacion WHERE IdUbicacion = ?`, [id]);
         return rows as UbicacionData[];
     }
 
@@ -42,12 +42,12 @@ export class Ubicacion {
         await conexion.execute("START TRANSACTION");
 
         const result = await conexion.execute(
-            `INSERT INTO Ubicacion (IdUsuario, Latitud, Longitud) VALUES (?, ?, ?)`,
+            `INSERT INTO ubicacion (IdUsuario, Latitud, Longitud) VALUES (?, ?, ?)`,
             [IdUsuario, Latitud, Longitud]
         );
 
         if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
-            const [ubicacion] = await conexion.query(`SELECT * FROM Ubicacion WHERE IdUbicacion = LAST_INSERT_ID()`);
+            const [ubicacion] = await conexion.query(`SELECT * FROM ubicacion WHERE IdUbicacion = LAST_INSERT_ID()`);
             await conexion.execute("COMMIT");
             return { success: true, message: "Ubicación registrada correctamente", ubicacion: ubicacion };
         } else {
@@ -75,7 +75,7 @@ export class Ubicacion {
         await conexion.execute("START TRANSACTION");
 
         const result = await conexion.execute(
-            `UPDATE Ubicacion SET IdUsuario = ?, Latitud = ?, Longitud = ? WHERE IdUbicacion = ?`,
+            `UPDATE ubicacion SET IdUsuario = ?, Latitud = ?, Longitud = ? WHERE IdUbicacion = ?`,
             [IdUsuario, Latitud, Longitud, this._idUbicacion]
         );
 
@@ -100,7 +100,7 @@ export class Ubicacion {
         await conexion.execute("START TRANSACTION");
 
         const result = await conexion.execute(
-            `DELETE FROM Ubicacion WHERE IdUbicacion = ?`,
+            `DELETE FROM ubicacion WHERE IdUbicacion = ?`,
             [this._idUbicacion]
         );
 

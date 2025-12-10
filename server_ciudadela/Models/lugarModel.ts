@@ -20,12 +20,12 @@ export class Lugar {
   }
 
   public async seleccionarLugares(): Promise<LugarData[]> {
-    const { rows } = await conexion.execute(`SELECT * FROM Lugar`);
+    const { rows } = await conexion.execute(`SELECT * FROM lugar`);
     return rows as LugarData[];
   }
 
   public async seleccionarLugarPorId(id: number): Promise<LugarData[]> {
-    const { rows } = await conexion.execute(`SELECT * FROM Lugar WHERE IdLugar = ?`, [id]);
+    const { rows } = await conexion.execute(`SELECT * FROM lugar WHERE IdLugar = ?`, [id]);
     return rows as LugarData[];
   }
 
@@ -40,12 +40,12 @@ export class Lugar {
       await conexion.execute("START TRANSACTION");
 
       const result = await conexion.execute(
-        `INSERT INTO Lugar (IdUsuario, Nombre, Descripcion, Latitud, Longitud) VALUES (?, ?, ?, ?, ?)`,
+        `INSERT INTO lugar (IdUsuario, Nombre, Descripcion, Latitud, Longitud) VALUES (?, ?, ?, ?, ?)`,
         [IdUsuario, Nombre, Descripcion, Latitud, Longitud]
       );
 
       if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
-        const [lugar] = await conexion.query(`SELECT * FROM Lugar WHERE IdLugar = LAST_INSERT_ID()`);
+        const [lugar] = await conexion.query(`SELECT * FROM lugar WHERE IdLugar = LAST_INSERT_ID()`);
         await conexion.execute("COMMIT");
         return { success: true, message: "Lugar registrado correctamente", lugar: lugar };
       } else {

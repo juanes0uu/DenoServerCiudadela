@@ -18,12 +18,12 @@ export class RutaDetalle {
     }
 
     public async seleccionarRutaDetalles(): Promise<RutaDetalleData[]> {
-        const { rows } = await conexion.execute(`SELECT * FROM RutaDetalle`);
+        const { rows } = await conexion.execute(`SELECT * FROM rutadetalle`);
         return rows as RutaDetalleData[];
     }
 
     public async seleccionarRutaDetallePorId(id: number): Promise<RutaDetalleData[]> {
-        const { rows } = await conexion.execute(`SELECT * FROM RutaDetalle WHERE IdRutaDetalle = ?`, [id]);
+        const { rows } = await conexion.execute(`SELECT * FROM rutadetalle WHERE IdRutaDetalle = ?`, [id]);
         return rows as RutaDetalleData[];
     }
 
@@ -37,12 +37,12 @@ export class RutaDetalle {
         await conexion.execute("START TRANSACTION");
 
         const result = await conexion.execute(
-            `INSERT INTO RutaDetalle (IdRuta, Latitud, Longitud, Orden) VALUES (?, ?, ?, ?)`,
+            `INSERT INTO rutadetalle (IdRuta, Latitud, Longitud, Orden) VALUES (?, ?, ?, ?)`,
             [IdRuta, Latitud, Longitud, Orden]
         );
 
         if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
-            const [nuevo] = await conexion.query(`SELECT * FROM RutaDetalle WHERE IdRutaDetalle = LAST_INSERT_ID()`);
+            const [nuevo] = await conexion.query(`SELECT * FROM rutadetalle WHERE IdRutaDetalle = LAST_INSERT_ID()`);
             await conexion.execute("COMMIT");
             return { success: true, message: "RutaDetalle registrado correctamente", data: nuevo };
         } else {
@@ -57,7 +57,7 @@ export class RutaDetalle {
     // 🔹 Obtener todos los puntos de una ruta (por IdRuta)
     public async seleccionarRutaDetallePorRuta(idRuta: number): Promise<RutaDetalleData[]> {
         const { rows } = await conexion.execute(
-            `SELECT * FROM RutaDetalle WHERE IdRuta = ? ORDER BY Orden ASC`,
+            `SELECT * FROM rutadetalle WHERE IdRuta = ? ORDER BY Orden ASC`,
             [idRuta]
         );
         return rows as RutaDetalleData[];
@@ -73,7 +73,7 @@ export class RutaDetalle {
 
         await conexion.execute("START TRANSACTION");
         const result = await conexion.execute(
-            `UPDATE RutaDetalle SET IdRuta = ?, Latitud = ?, Longitud = ?, Orden = ? WHERE IdRutaDetalle = ?`,
+            `UPDATE rutadetalle SET IdRuta = ?, Latitud = ?, Longitud = ?, Orden = ? WHERE IdRutaDetalle = ?`,
             [IdRuta, Latitud, Longitud, Orden, this._idRutaDetalle]
         );
 
@@ -96,7 +96,7 @@ export class RutaDetalle {
         await conexion.execute("START TRANSACTION");
 
         const result = await conexion.execute(
-            `DELETE FROM RutaDetalle WHERE IdRutaDetalle = ?`,
+            `DELETE FROM rutadetalle WHERE IdRutaDetalle = ?`,
             [this._idRutaDetalle]
         );
 

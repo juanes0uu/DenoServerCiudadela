@@ -18,13 +18,13 @@ export class Ruta {
 
     // Obtener todas las rutas
     public async seleccionarRutas(): Promise<RutaData[]> {
-        const { rows } = await conexion.execute(`SELECT * FROM Ruta`);
+        const { rows } = await conexion.execute(`SELECT * FROM ruta`);
         return rows as RutaData[];
     }
 
     // Obtener una ruta por ID
     public async seleccionarRutaPorId(id: number): Promise<RutaData[]> {
-        const { rows } = await conexion.execute(`SELECT * FROM Ruta WHERE IdRuta = ?`, [id]);
+        const { rows } = await conexion.execute(`SELECT * FROM ruta WHERE IdRuta = ?`, [id]);
         return rows as RutaData[];
     }
 
@@ -44,12 +44,12 @@ export class Ruta {
         await conexion.execute("START TRANSACTION");
 
         const result = await conexion.execute(
-            `INSERT INTO Ruta (IdUsuario, Nombre) VALUES (?, ?)`,
+            `INSERT INTO ruta (IdUsuario, Nombre) VALUES (?, ?)`,
             [IdUsuario, Nombre]
         );
 
         if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
-            const [ruta] = await conexion.query(`SELECT * FROM Ruta WHERE IdRuta = LAST_INSERT_ID()`);
+            const [ruta] = await conexion.query(`SELECT * FROM ruta WHERE IdRuta = LAST_INSERT_ID()`);
             await conexion.execute("COMMIT");
             return { success: true, message: "Ruta registrada correctamente", ruta: ruta };
         } else {
@@ -78,7 +78,7 @@ export class Ruta {
         await conexion.execute("START TRANSACTION");
 
         const result = await conexion.execute(
-            `UPDATE Ruta SET Nombre = ? WHERE IdRuta = ?`,
+            `UPDATE ruta SET Nombre = ? WHERE IdRuta = ?`,
             [Nombre, this._idRuta]
         );
 
@@ -103,7 +103,7 @@ export class Ruta {
 
         await conexion.execute("START TRANSACTION");
 
-        const result = await conexion.execute(`DELETE FROM Ruta WHERE IdRuta = ?`, [this._idRuta]);
+        const result = await conexion.execute(`DELETE FROM ruta WHERE IdRuta = ?`, [this._idRuta]);
 
         if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
             await conexion.execute("COMMIT");

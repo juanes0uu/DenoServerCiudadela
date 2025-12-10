@@ -36,12 +36,12 @@ export class Rol {
       await conexion.execute("START TRANSACTION");
 
       const result = await conexion.execute(
-        `INSERT INTO Rol (IdRol, Rol) VALUES (?, ?)`,
+        `INSERT INTO rol (IdRol, Rol) VALUES (?, ?)`,
         [IdRol, Rol]
       );
 
       if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
-        const [Rol] = await conexion.query(`SELECT * FROM Rol WHERE IdRol = LAST_INSERT_ID()`);
+        const [Rol] = await conexion.query(`SELECT * FROM rol WHERE IdRol = LAST_INSERT_ID()`);
         await conexion.execute("COMMIT");
         return { success: true, message: "Rol registrado correctamente", Rol: Rol };
       } else {
@@ -66,7 +66,7 @@ export class Rol {
         await conexion.execute("START TRANSACTION");
 
         const result = await conexion.execute(
-            `UPDATE Rol SET Rol = ? WHERE IdRol = ?`,
+            `UPDATE rol SET Rol = ? WHERE IdRol = ?`,
             [Rol, this._idRol]
         );
 
@@ -91,7 +91,7 @@ export class Rol {
 
         await conexion.execute("START TRANSACTION");
 
-        const result = await conexion.execute(`DELETE FROM Rol WHERE IdRol = ?`, [this._idRol]);
+        const result = await conexion.execute(`DELETE FROM rol WHERE IdRol = ?`, [this._idRol]);
 
         if (result && typeof result.affectedRows === "number" && result.affectedRows > 0) {
             await conexion.execute("COMMIT");
