@@ -32,7 +32,7 @@ export class Usuario {
 
   //  Obtener todos los usuarios
   public async seleccionarUsuarios(): Promise<UsuarioData[]> {
-    const { rows } = await conexion.execute(`SELECT * FROM Usuario`);
+    const { rows } = await conexion.execute(`SELECT * FROM usuario`);
     return rows as UsuarioData[];
   }
 
@@ -140,7 +140,7 @@ export class Usuario {
       await conexion.execute("START TRANSACTION");
 
       const result = await conexion.execute(
-        `UPDATE Usuario SET Nombre = ?, Email = ?, Documento = ? WHERE IdUsuario = ?`,
+        `UPDATE usuario SET Nombre = ?, Email = ?, Documento = ? WHERE IdUsuario = ?`,
         [Nombre, Email, Documento, this._idUsuario]
       );
 
@@ -165,7 +165,7 @@ export class Usuario {
       await conexion.execute("START TRANSACTION");
 
       const result = await conexion.execute(
-        `DELETE FROM Usuario WHERE IdUsuario = ?`,
+        `DELETE FROM usuario WHERE IdUsuario = ?`,
         [this._idUsuario]
       );
 
