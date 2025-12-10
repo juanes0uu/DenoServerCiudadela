@@ -33,13 +33,28 @@ app.use(router.allowedMethods());
 
 // Routers del sistema
 app.use(usuarioRouter.routes());
+app.use(usuarioRouter.allowedMethods());
+
 app.use(lugarRouter.routes());
+app.use(lugarRouter.allowedMethods());
+
 app.use(ubicacionRouter.routes());
+app.use(ubicacionRouter.allowedMethods());
+
 app.use(rutaRouter.routes());
+app.use(rutaRouter.allowedMethods());
+
 app.use(rutaDetalleRouter.routes());
+app.use(rutaDetalleRouter.allowedMethods()); // ✅ ESTE ES CLAVE
+
 app.use(loginRouter.routes());
+app.use(loginRouter.allowedMethods());
+
 app.use(rolRouter.routes());
+app.use(rolRouter.allowedMethods());
+
 app.use(wsRouter.routes());
 app.use(wsRouter.allowedMethods());
+
 console.log("Servidor activo en Deno Deploy");
 await app.listen({ port: 8080 });
